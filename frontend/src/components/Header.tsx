@@ -27,9 +27,11 @@ const Header = () => {
                     <FaSun />
                 </Button>
 
-                <Button outline className="h-10" gradientDuoTone="purpleToBlue">
-                    <Link to="/signIn">Sign In</Link>
-                </Button>
+                <Link to="/login">
+                    <Button outline className="h-10" gradientDuoTone="purpleToBlue">
+                        Log In
+                    </Button>
+                </Link>
 
                 <Navbar.Toggle />
 

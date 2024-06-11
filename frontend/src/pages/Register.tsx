@@ -80,7 +80,7 @@ const Register = () => {
                                 <Button gradientDuoTone="greenToBlue" type="submit" disabled={loading}>
                                     {!loading ? (<div>Register</div>) : <><Spinner size="sm" /><span className="pl-3">Loading...</span></>}
                                 </Button>
-                                <span className="text-sm">Have an account? <Link className="text-teal-500" to="/signin">Login here</Link></span>
+                                <span className="text-sm">Have an account? <Link className="text-teal-500" to="/login">Login here</Link></span>
 
                             </div>
                         </form>

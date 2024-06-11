@@ -6,12 +6,13 @@ import Projects from "@/pages/Projects"
 import Register from "@/pages/Register"
 import {Toaster} from "react-hot-toast"
 import Login from "@/pages/Login"
+import Footer from "@/components/Footer"
 function App() {
     return (
         <div >
             <BrowserRouter>
-                <Toaster position="bottom-center" />
                 <Header />
+                <Toaster position="bottom-center" />
                 <Routes>
                     <Route element={<Home />} path="/" />
                     <Route element={<DashBoard />} path="/dashboard" />
@@ -19,7 +20,7 @@ function App() {
                     <Route element={<Register />} path="/register" />
                     <Route element={<Login />} path="/login" />
                 </Routes>
-
+                <Footer />
             </BrowserRouter>
         </div>
 

@@ -2,6 +2,10 @@ import express from "express"
 import userModel from "../models/userModel";
 import bcryptjs from "bcrypt"
 import customError from "../utils/customError";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
+import {Document} from "mongodb";
+dotenv.config();
 
 type ControllerFuncDef = (req: express.Request, res: express.Response, next: express.NextFunction) => void
 
@@ -36,3 +40,31 @@ export const register: ControllerFuncDef = async (req, res, next) => {
 }
 
 
+export const login: ControllerFuncDef = async (req, res, next) => {
+    const {email, password} = req.body;
+
+    try {
+        if (!email || !password || email == "" || password == "") {
+            return next(customError("All fields are required", 400));
+        }
+        const query: typeof userModel & Document | null = await userModel.findOne({email})
+        if (query) {
+            if (query?.password) {
+                const isPassword = bcryptjs.compareSync(password, query.password);
+                if (isPassword) {
+                    const token = jwt.sign({id: query._id}, process.env.JWT_SEC_KEY as string, {expiresIn: "2d"})
+                    const {password, ...rest} = query._doc
+                    res.cookie("my_cookie", token, {httpOnly: true}).status(200).json(rest)
+
+                } else {
+                    res.status(401).json({message: "Password is incorrect"})
+                }
+            }
+        } else {
+            return next(customError("User doesn't exist", 404))
+        }
+    } catch (e: unknown) {
+        next(e);
+    }
+
+}
