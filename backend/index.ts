@@ -4,10 +4,15 @@ import mongoose from "mongoose";
 import cors from "cors";
 import {customErrorType} from "./utils/customError";
 import authRoutes from "./routes/authRoutes.ts"
+import helmet from "helmet";
+import morgan from "morgan";
 dotenv.config();
 const app = express();
 
 app.use(express.json())
+app.use(helmet())
+app.use(morgan("dev"))
+app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin"}))
 const corsOptions = {
     credentials: true,
     origin: ["http://localhost:5173"]
@@ -35,5 +40,5 @@ app.use("/auth/", authRoutes);
 app.use((error: customErrorType, req: express.Request, res: express.Response, next: express.NextFunction) => {
     const message = error.message || "Internal server error";
     const statusCode = error.statusCode || 500;
-    res.status(statusCode).json(message);
+    res.status(statusCode).json({message});
 })
