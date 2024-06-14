@@ -9,8 +9,11 @@ import toast from "react-hot-toast";
 import {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
+import {loginSuccess} from "@/redux/slices/userSlice";
+import {useDispatch} from "react-redux";
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const formData = {
         email: "",
@@ -20,13 +23,13 @@ const Login = () => {
         setLoading(true);
         toast.dismiss();
         try {
-            await axios.post("/auth/login", {
+            const response = await axios.post("/auth/login", {
                 password: value.password,
                 email: value.email.trim()
             })
-            navigate("/");
+            dispatch(loginSuccess(response.data));
             toast.success("Login Successfull")
-            setLoading(false);
+            navigate("/");
 
         } catch (e: unknown) {
             console.log(e)
