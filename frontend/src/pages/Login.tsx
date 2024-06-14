@@ -11,6 +11,7 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {loginSuccess} from "@/redux/slices/userSlice";
 import {useDispatch} from "react-redux";
+import OAuth from "@/components/OAuth";
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -74,9 +75,10 @@ const Login = () => {
                                 {touched.password && errors.password ? <span className="text-red-500 text-xs">{errors.password}</span> : null}
                             </div>
                             <div className="flex flex-col gap-3 justify-center">
-                                <Button gradientDuoTone="greenToBlue" type="submit" disabled={loading}>
+                                <Button gradientDuoTone="greenToBlue" className="font-semibold" type="submit" disabled={loading}>
                                     {!loading ? (<div>Login</div>) : <><Spinner size="sm" /><span className="pl-3">Loading...</span></>}
                                 </Button>
+                                <OAuth />
                                 <span className="text-sm">Don&apos;t Have An Account? <Link className="text-teal-500" to="/register">Register here</Link></span>
 
                             </div>

@@ -68,3 +68,42 @@ export const login: ControllerFuncDef = async (req, res, next) => {
     }
 
 }
+
+
+
+export const Oauth: ControllerFuncDef = async (req, res, next) => {
+
+    try {
+        const {displayName, photoURL, email}: {displayName: string, photoURL: string, email: string} = req.body;
+        if (!email || !displayName || !photoURL || email == "" || displayName == "" || photoURL == "") {
+            return next(customError("All fields are required", 400));
+        }
+        const query: typeof userModel & Document | null = await userModel.findOne({email})
+        if (!query) {
+            const password = Math.floor(Math.random() * 10000).toString();
+            const hashedPass = bcryptjs.hashSync(password, 10);
+
+            const userName = displayName.trim().split(" ").join("").toLowerCase() + "_" + Math.floor(Math.random() * 10000).toString()
+
+
+            const response = new userModel({
+                userName,
+                password: hashedPass,
+                userPfp: photoURL,
+                email
+            })
+            const userDoc: Document = await response.save();
+            const {password: pass, ...rest} = userDoc._doc;
+            const token = jwt.sign({id: userDoc._id}, process.env.JWT_SEC_KEY!, {expiresIn: "2d"})
+            res.cookie("my_cookie", token, {httpOnly: true}).status(201).json(rest);
+        }
+        else {
+            const {password, ...rest} = query._doc;
+            const token = jwt.sign({id: query._id}, process.env.JWT_SEC_KEY as string, {expiresIn: "2d"});
+            res.cookie("my_cookie", token, {httpOnly: true}).status(200).json(rest);
+        }
+
+    } catch (e: unknown) {
+
+    }
+}
